@@ -73,6 +73,9 @@ def rerun_as_admin(run_as_SYSTEM=False, run_as_TrustedInstaller=False, keep_same
     except:
         failed = True
 
+    if current_level >= 1:
+        failed = False
+
     # Exit the current script after attempting to rerun as admin
     if not failed:
         zhmiscellany.misc.die()
