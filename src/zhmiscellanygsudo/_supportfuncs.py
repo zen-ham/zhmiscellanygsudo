@@ -77,7 +77,7 @@ def is_admin():
 
 
 def run(command, run_as_system=False, run_as_TrustedInstaller=False, **kwargs):
-    inserted_command = f'{_gsudo_binary_path}{" -s" if run_as_system and not run_as_TrustedInstaller else ""}{" -ti" if run_as_TrustedInstaller else ""}'
+    inserted_command = f'{_gsudo_binary_path}{" -s" if run_as_system and not run_as_TrustedInstaller else ""}{" --ti" if run_as_TrustedInstaller else ""}'
     if type(command) == list:
         command.insert(0, inserted_command)
     elif type(command) == str:
@@ -89,7 +89,7 @@ def run(command, run_as_system=False, run_as_TrustedInstaller=False, **kwargs):
 
 
 def Popen(command, run_as_system=False, run_as_TrustedInstaller=False, **kwargs):
-    inserted_command = f'{_gsudo_binary_path}{" -s" if run_as_system and not run_as_TrustedInstaller else ""}{" -ti" if run_as_TrustedInstaller else ""}'
+    inserted_command = f'{_gsudo_binary_path}{" -s" if run_as_system and not run_as_TrustedInstaller else ""}{" --ti" if run_as_TrustedInstaller else ""}'
     if type(command) == list:
         command.insert(0, inserted_command)
     elif type(command) == str:
