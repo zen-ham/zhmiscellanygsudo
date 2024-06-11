@@ -1,6 +1,4 @@
-import os, zhmiscellany, sys, ctypes
-import zhmiscellanygsudo.admin_subprocess.run
-import zhmiscellanygsudo.admin_subprocess.Popen
+import os, zhmiscellany, sys, ctypes, subprocess
 
 
 def get_gsudo_binary_path():
@@ -54,9 +52,9 @@ def rerun_as_admin(keep_same_console=True):
 
     try:
         if keep_same_console:
-            zhmiscellanygsudo.admin_subprocess.run(command)
+            run(command)
         else:
-            zhmiscellanygsudo.admin_subprocess.Popen(command)
+            Popen(command)
     except Exception as e:
         raise RuntimeError(f"Failed to elevate privileges: {e}")
 
@@ -66,3 +64,25 @@ def rerun_as_admin(keep_same_console=True):
 
 def is_admin():
     return zhmiscellany.misc.is_admin()
+
+
+def run(command, **kwargs):
+    if type(command) == list:
+        command.insert(0, _gsudo_binary_path)
+    elif type(command) == str:
+        command = f'{_gsudo_binary_path} {command}'
+    else:
+        raise TypeError(f'Invalid command type "{type(command)}" for zhmiscellanygsudo.run, requires list or str')
+    process = subprocess.run(command, **kwargs)
+    return process
+
+
+def Popen(command, **kwargs):
+    if type(command) == list:
+        command.insert(0, _gsudo_binary_path)
+    elif type(command) == str:
+        command = f'{_gsudo_binary_path} {command}'
+    else:
+        raise TypeError(f'Invalid command type "{type(command)}" for zhmiscellanygsudo.Popen, requires list or str')
+    process = subprocess.Popen(command, **kwargs)
+    return process
