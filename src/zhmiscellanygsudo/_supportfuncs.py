@@ -1,5 +1,6 @@
 import os, zhmiscellany, sys, ctypes
-import zhmiscellanygsudo.admin_subprocess
+import zhmiscellanygsudo.admin_subprocess.run
+import zhmiscellanygsudo.admin_subprocess.Popen
 
 
 def get_gsudo_binary_path():
