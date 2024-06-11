@@ -50,16 +50,26 @@ def rerun_as_admin(keep_same_console=True):
     else:
         command = f'python "{script_path}"'
 
+    elevated = False
     try:
         if keep_same_console:
-            run(command)
+            process = run(command)
         else:
-            Popen(command)
+            process = Popen(command)
     except Exception as e:
         raise RuntimeError(f"Failed to elevate privileges: {e}")
 
+    try:
+        returncode = process.check_returncode()
+        failed = False
+    except:
+        failed = True
+
     # Exit the current script after attempting to rerun as admin
-    zhmiscellany.misc.die()
+    if not failed:
+        zhmiscellany.misc.die()
+    else:
+        raise RuntimeError(f"Failed to elevate privileges, operation was canceled by the user.")
 
 
 def is_admin():
