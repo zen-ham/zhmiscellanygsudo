@@ -89,7 +89,7 @@ Works the exact same way as subprocess.run, but by default run the command as ad
 
 `zhmiscellanygsudo.is_admin(simple=False)`
 
-Returns strings `Normal` if the current process isn't running as admin, returns `Admin` if the process is running with admin, returns `SYSTEM` if the process is running as SYSTEM, and returns `TrustedInstaller` if running as TrustedInstaller. On some machines it may return an incorrect result when running as SYSTEM or TrustedInstaller, but only inaccurate between those 2 selections.
+Returns ints `0` if the current process isn't running as admin, returns `1` if the process is running with admin, returns `2` if the process is running as SYSTEM, and returns `3` if running as TrustedInstaller. On some machines it may return an incorrect result when running as SYSTEM or TrustedInstaller, but only inaccurate between those 2 selections.
 
 if `simple` is set to True, then it will return False if not running with admin privileges or above, and True if it is.
 #

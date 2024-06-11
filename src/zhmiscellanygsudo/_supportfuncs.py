@@ -32,7 +32,15 @@ _gsudo_binary_path = get_gsudo_binary_path()
 
 
 def rerun_as_admin(run_as_SYSTEM=False, run_as_TrustedInstaller=False, keep_same_console=True):
-    if zhmiscellany.misc.is_admin():
+    requested_level = 1
+    if run_as_SYSTEM:
+        requested_level = 2
+    if run_as_TrustedInstaller:
+        requested_level = 3
+
+    current_level = is_admin()
+
+    if current_level >= requested_level:  # if the process is already running at or above the requested privilege level then don't do anything
         return
 
     # Get the script path
@@ -92,19 +100,19 @@ def is_admin(simple=False):
 
     # Determine the privilege level
     if account_name == 'SYSTEM':
-        privilege_level = 'SYSTEM'
+        privilege_level = 2
     elif account_name == 'TrustedInstaller':
-        privilege_level = 'TrustedInstaller'
+        privilege_level = 3
     elif is_admin:
-        privilege_level = 'Admin'
+        privilege_level = 1
     else:
-        privilege_level = 'Normal'
+        privilege_level = 0
 
     # extra check to make sure
-    if privilege_level == 'SYSTEM':
+    if privilege_level == 2:
         result = subprocess.run(['whoami', '/priv'], capture_output=True, text=True)
         if len(result.stdout) > 2754:
-            privilege_level = 'TrustedInstaller'
+            privilege_level = 3
 
     return privilege_level
 
