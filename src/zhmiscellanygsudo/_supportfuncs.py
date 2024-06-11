@@ -33,3 +33,7 @@ _gsudo_binary_path = get_gsudo_binary_path()
 
 def rerun_as_admin(keep_same_console=True):
     pass
+
+
+def is_admin():
+    return zhmiscellany.misc.is_admin()

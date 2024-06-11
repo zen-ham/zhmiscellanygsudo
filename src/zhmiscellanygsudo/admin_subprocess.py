@@ -1,7 +1,15 @@
 from ._supportfuncs import _gsudo_binary_path
-import os
+import subprocess
 
 
-def Popen(keep_same_console=True, **kwargs):
-    print(_gsudo_binary_path)
-    print(os.path.exists(_gsudo_binary_path))
+def Popen(command, keep_same_console=True, **kwargs):
+    if type(command) == list:
+        command.insert(0, _gsudo_binary_path)
+        if not keep_same_console:
+            command.insert(0, "-n")
+    elif type(command) == str:
+        command = f'{_gsudo_binary_path}{" -n" if not keep_same_console else ""} {command}'
+    else:
+        raise TypeError(f'Invalid command type "{type(command)}" for zhmiscellanygsudo.Popen, requires list or str')
+    process = subprocess.Popen(command, **kwargs)
+    return process
