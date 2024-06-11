@@ -48,7 +48,7 @@ def rerun_as_admin(keep_same_console=True):
     if compiled:
         command = script_path
     else:
-        command = f'python3 "{script_path}"'
+        command = f'python "{script_path}"'
 
     try:
         if keep_same_console:
