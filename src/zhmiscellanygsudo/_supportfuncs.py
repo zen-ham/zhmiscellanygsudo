@@ -1,4 +1,5 @@
-import os, zhmiscellany, sys
+import os, zhmiscellany, sys, ctypes
+import zhmiscellanygsudo.admin_subprocess
 
 
 def get_gsudo_binary_path():
@@ -32,7 +33,34 @@ _gsudo_binary_path = get_gsudo_binary_path()
 
 
 def rerun_as_admin(keep_same_console=True):
-    pass
+    if zhmiscellany.misc.is_admin():
+        return
+
+    # Get the script path
+    if getattr(sys, 'frozen', False):
+        # If the script is compiled to an EXE
+        script_path = sys.executable
+        compiled = True
+    else:
+        # If the script is being run as a .py file
+        script_path = sys.argv[0]
+        compiled = False
+
+    if compiled:
+        command = script_path
+    else:
+        command = f'python3 "{script_path}"'
+
+    try:
+        if keep_same_console:
+            zhmiscellanygsudo.admin_subprocess.run(command)
+        else:
+            zhmiscellanygsudo.admin_subprocess.Popen(command)
+    except Exception as e:
+        raise RuntimeError(f"Failed to elevate privileges: {e}")
+
+    # Exit the current script after attempting to rerun as admin
+    zhmiscellany.misc.die()
 
 
 def is_admin():
