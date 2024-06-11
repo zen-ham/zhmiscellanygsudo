@@ -1,4 +1,4 @@
-import os, zhmiscellany, sys, ctypes, subprocess
+import os, zhmiscellany, sys, ctypes, subprocess, win32security, win32api
 
 
 def get_gsudo_binary_path():
@@ -31,7 +31,7 @@ def get_gsudo_binary_path():
 _gsudo_binary_path = get_gsudo_binary_path()
 
 
-def rerun_as_admin(run_as_system=False, run_as_TrustedInstaller=False, keep_same_console=True):
+def rerun_as_admin(run_as_SYSTEM=False, run_as_TrustedInstaller=False, keep_same_console=True):
     if zhmiscellany.misc.is_admin():
         return
 
@@ -53,9 +53,9 @@ def rerun_as_admin(run_as_system=False, run_as_TrustedInstaller=False, keep_same
     elevated = False
     try:
         if keep_same_console:
-            process = run(command, run_as_system=run_as_system, run_as_TrustedInstaller=run_as_TrustedInstaller)
+            process = run(command, run_as_SYSTEM=run_as_SYSTEM, run_as_TrustedInstaller=run_as_TrustedInstaller)
         else:
-            process = Popen(command, run_as_system=run_as_system, run_as_TrustedInstaller=run_as_TrustedInstaller)
+            process = Popen(command, run_as_SYSTEM=run_as_SYSTEM, run_as_TrustedInstaller=run_as_TrustedInstaller)
     except Exception as e:
         raise RuntimeError(f"Failed to elevate privileges: {e}")
 
@@ -72,12 +72,45 @@ def rerun_as_admin(run_as_system=False, run_as_TrustedInstaller=False, keep_same
         raise RuntimeError(f"Failed to elevate privileges, operation was canceled by the user.")
 
 
-def is_admin():
-    return zhmiscellany.misc.is_admin()
+def is_admin(simple=False):
+    # Get the current process token
+    process_token = win32security.OpenProcessToken(
+        win32api.GetCurrentProcess(),
+        win32security.TOKEN_QUERY
+    )
+
+    # Get the user SID
+    user_sid, _ = win32security.GetTokenInformation(
+        process_token, win32security.TokenUser
+    )
+
+    # Lookup the account name and domain
+    account_name, domain_name, account_type = win32security.LookupAccountSid(None, user_sid)
+
+    # Check if the account is part of the Administrators group
+    is_admin = ctypes.windll.shell32.IsUserAnAdmin()
+
+    # Determine the privilege level
+    if account_name == 'SYSTEM':
+        privilege_level = 'SYSTEM'
+    elif account_name == 'TrustedInstaller':
+        privilege_level = 'TrustedInstaller'
+    elif is_admin:
+        privilege_level = 'Admin'
+    else:
+        privilege_level = 'Normal'
+
+    # extra check to make sure
+    if privilege_level == 'SYSTEM':
+        result = subprocess.run(['whoami', '/priv'], capture_output=True, text=True)
+        if len(result.stdout) > 2754:
+            privilege_level = 'TrustedInstaller'
+
+    return privilege_level
 
 
-def run(command, run_as_system=False, run_as_TrustedInstaller=False, **kwargs):
-    inserted_command = f'{_gsudo_binary_path}{" -s" if run_as_system and not run_as_TrustedInstaller else ""}{" --ti" if run_as_TrustedInstaller else ""}'
+def run(command, run_as_SYSTEM=False, run_as_TrustedInstaller=False, **kwargs):
+    inserted_command = f'{_gsudo_binary_path}{" -s" if run_as_SYSTEM and not run_as_TrustedInstaller else ""}{" --ti" if run_as_TrustedInstaller else ""}'
     if type(command) == list:
         command.insert(0, inserted_command)
     elif type(command) == str:
@@ -88,8 +121,8 @@ def run(command, run_as_system=False, run_as_TrustedInstaller=False, **kwargs):
     return process
 
 
-def Popen(command, run_as_system=False, run_as_TrustedInstaller=False, **kwargs):
-    inserted_command = f'{_gsudo_binary_path}{" -s" if run_as_system and not run_as_TrustedInstaller else ""}{" --ti" if run_as_TrustedInstaller else ""}'
+def Popen(command, run_as_SYSTEM=False, run_as_TrustedInstaller=False, **kwargs):
+    inserted_command = f'{_gsudo_binary_path}{" -s" if run_as_SYSTEM and not run_as_TrustedInstaller else ""}{" --ti" if run_as_TrustedInstaller else ""}'
     if type(command) == list:
         command.insert(0, inserted_command)
     elif type(command) == str:

@@ -60,35 +60,36 @@ Documentation:
 `zhmiscellanygsudo.rerun_as_admin()`
 ---
 
-`zhmiscellanygsudo.rerun_as_admin(run_as_system=False, run_as_TrustedInstaller=False, keep_same_console=True)`
+`zhmiscellanygsudo.rerun_as_admin(run_as_SYSTEM=False, run_as_TrustedInstaller=False, keep_same_console=True)`
 
-By default, rerun the current script as admin. Optionally run as System or even TrustedInstaller.
+By default, rerun the current script as admin. Optionally run as SYSTEM or even TrustedInstaller.
 
 #
 
 `zhmiscellanygsudo.admin_subprocess.Popen()`
 ---
 
-`zhmiscellanygsudo.admin_subprocess.Popen(command, run_as_system=False, run_as_TrustedInstaller=False, **kwargs)`
+`zhmiscellanygsudo.admin_subprocess.Popen(command, run_as_SYSTEM=False, run_as_TrustedInstaller=False, **kwargs)`
 
-Works the exact same way as the beloved subprocess.Popen, but by default run the command as admin. Returns a subprocess "process" object, again, exactly the same as subprocess. Optionally run as System or even TrustedInstaller.
+Works the exact same way as the beloved subprocess.Popen, but by default run the command as admin. Returns a subprocess "process" object, again, exactly the same as subprocess. Optionally run as SYSTEM or even TrustedInstaller.
 
 #
 
 `zhmiscellanygsudo.admin_subprocess.run()`
 ---
 
-`zhmiscellanygsudo.admin_subprocess.run(command, run_as_system=False, run_as_TrustedInstaller=False, **kwargs)`
+`zhmiscellanygsudo.admin_subprocess.run(command, run_as_SYSTEM=False, run_as_TrustedInstaller=False, **kwargs)`
 
-Works the exact same way as subprocess.run, but by default run the command as admin. Returns a subprocess "process" object, again, exactly the same as subprocess. Optionally run as System or even TrustedInstaller.
+Works the exact same way as subprocess.run, but by default run the command as admin. Returns a subprocess "process" object, again, exactly the same as subprocess. Optionally run as SYSTEM or even TrustedInstaller.
 
 #
 
 `zhmiscellanygsudo.is_admin()`
 ---
 
-`zhmiscellanygsudo.is_admin()`
+`zhmiscellanygsudo.is_admin(simple=False)`
 
-Returns True if the current process is running as admin, False if not.
+Returns strings `Normal` if the current process isn't running as admin, returns `Admin` if the process is running with admin, returns `SYSTEM` if the process is running as SYSTEM, and returns `TrustedInstaller` if running as TrustedInstaller. On some machines it may return an incorrect result when running as SYSTEM or TrustedInstaller, but only inaccurate between those 2 selections.
 
+if `simple` is set to True, then it will return False if not running with admin privileges or above, and True if it is.
 #
