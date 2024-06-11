@@ -39,6 +39,7 @@ def rerun_as_admin(run_as_SYSTEM=False, run_as_TrustedInstaller=False, keep_same
         requested_level = 3
 
     current_level = is_admin()
+    print(f'current_level {current_level}\nrequested_level {requested_level}')
 
     if current_level >= requested_level:  # if the process is already running at or above the requested privilege level then don't do anything
         return
