@@ -31,7 +31,7 @@ def get_gsudo_binary_path():
 _gsudo_binary_path = get_gsudo_binary_path()
 
 
-def rerun_as_admin(keep_same_console=True):
+def rerun_as_admin(run_as_system=False, run_as_TrustedInstaller=False, keep_same_console=True):
     if zhmiscellany.misc.is_admin():
         return
 
@@ -53,9 +53,9 @@ def rerun_as_admin(keep_same_console=True):
     elevated = False
     try:
         if keep_same_console:
-            process = run(command)
+            process = run(command, run_as_system=run_as_system, run_as_TrustedInstaller=run_as_TrustedInstaller)
         else:
-            process = Popen(command)
+            process = Popen(command, run_as_system=run_as_system, run_as_TrustedInstaller=run_as_TrustedInstaller)
     except Exception as e:
         raise RuntimeError(f"Failed to elevate privileges: {e}")
 
@@ -76,22 +76,24 @@ def is_admin():
     return zhmiscellany.misc.is_admin()
 
 
-def run(command, **kwargs):
+def run(command, run_as_system=False, run_as_TrustedInstaller=False, **kwargs):
+    inserted_command = f'{_gsudo_binary_path}{" -s" if run_as_system and not run_as_TrustedInstaller else ""}{" -ti" if run_as_TrustedInstaller else ""}'
     if type(command) == list:
-        command.insert(0, _gsudo_binary_path)
+        command.insert(0, inserted_command)
     elif type(command) == str:
-        command = f'{_gsudo_binary_path} {command}'
+        command = f'{inserted_command} {command}'
     else:
         raise TypeError(f'Invalid command type "{type(command)}" for zhmiscellanygsudo.run, requires list or str')
     process = subprocess.run(command, **kwargs)
     return process
 
 
-def Popen(command, **kwargs):
+def Popen(command, run_as_system=False, run_as_TrustedInstaller=False, **kwargs):
+    inserted_command = f'{_gsudo_binary_path}{" -s" if run_as_system and not run_as_TrustedInstaller else ""}{" -ti" if run_as_TrustedInstaller else ""}'
     if type(command) == list:
-        command.insert(0, _gsudo_binary_path)
+        command.insert(0, inserted_command)
     elif type(command) == str:
-        command = f'{_gsudo_binary_path} {command}'
+        command = f'{inserted_command} {command}'
     else:
         raise TypeError(f'Invalid command type "{type(command)}" for zhmiscellanygsudo.Popen, requires list or str')
     process = subprocess.Popen(command, **kwargs)
