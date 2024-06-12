@@ -58,6 +58,7 @@ def rerun_as_admin(run_as_SYSTEM=False, run_as_TrustedInstaller=False, keep_same
     else:
         command = f'python "{script_path}"'
 
+    s = time.time()
     elevated = False
     try:
         if keep_same_console:
@@ -67,7 +68,6 @@ def rerun_as_admin(run_as_SYSTEM=False, run_as_TrustedInstaller=False, keep_same
     except Exception as e:
         raise RuntimeError(f"Failed to elevate privileges: {e}"+f'\ncurrent_level {current_level}\nrequested_level {requested_level}')
 
-    s = time.time()
     try:
         returncode = process.check_returncode()
         failed = False
@@ -77,9 +77,6 @@ def rerun_as_admin(run_as_SYSTEM=False, run_as_TrustedInstaller=False, keep_same
     if failed:
         if time.time() - s > 0.1:  # nothing actually failed because it can be observed that the program did run for some time before exiting
             failed = False
-
-    if current_level >= 1:
-        failed = False
 
     # Exit the current script after attempting to rerun as admin
     if not failed:
