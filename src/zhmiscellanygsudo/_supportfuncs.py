@@ -70,7 +70,7 @@ def rerun_as_admin(run_as_SYSTEM=False, run_as_TrustedInstaller=False, keep_same
 
     try:
         returncode = process.returncode
-        print(returncode)
+        print(f'current_level {current_level}\nrequested_level {requested_level}\nreturncode {returncode}')
         failed = False
     except:
         failed = True
