@@ -69,7 +69,8 @@ def rerun_as_admin(run_as_SYSTEM=False, run_as_TrustedInstaller=False, keep_same
         raise RuntimeError(f"Failed to elevate privileges: {e}"+f'\ncurrent_level {current_level}\nrequested_level {requested_level}')
 
     try:
-        returncode = process.check_returncode()
+        returncode = process.returncode
+        print(returncode)
         failed = False
     except:
         failed = True
