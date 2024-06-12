@@ -66,7 +66,7 @@ def rerun_as_admin(run_as_SYSTEM=False, run_as_TrustedInstaller=False, keep_same
         else:
             process = Popen(command, run_as_SYSTEM=run_as_SYSTEM, run_as_TrustedInstaller=run_as_TrustedInstaller)
     except Exception as e:
-        raise RuntimeError(f"Failed to elevate privileges: {e}")
+        raise RuntimeError(f"Failed to elevate privileges: {e}"+f'\ncurrent_level {current_level}\nrequested_level {requested_level}')
 
     try:
         returncode = process.check_returncode()
@@ -81,7 +81,7 @@ def rerun_as_admin(run_as_SYSTEM=False, run_as_TrustedInstaller=False, keep_same
     if not failed:
         zhmiscellany.misc.die()
     else:
-        raise RuntimeError(f"Failed to elevate privileges, operation was canceled by the user.")
+        raise RuntimeError(f"Failed to elevate privileges, operation was canceled by the user."+f'\ncurrent_level {current_level}\nrequested_level {requested_level}')
 
 
 def is_admin(simple=False):
