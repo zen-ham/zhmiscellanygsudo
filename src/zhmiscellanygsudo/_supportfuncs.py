@@ -1,4 +1,4 @@
-import os, zhmiscellany, sys, ctypes, subprocess, win32security, win32api
+import os, zhmiscellany, sys, ctypes, subprocess, win32security, win32api, time
 
 
 def get_gsudo_binary_path():
@@ -39,7 +39,6 @@ def rerun_as_admin(run_as_SYSTEM=False, run_as_TrustedInstaller=False, keep_same
         requested_level = 3
 
     current_level = is_admin()
-    print(f'current_level {current_level}\nrequested_level {requested_level}')
 
     if current_level >= requested_level:  # if the process is already running at or above the requested privilege level then don't do anything
         return
@@ -68,11 +67,16 @@ def rerun_as_admin(run_as_SYSTEM=False, run_as_TrustedInstaller=False, keep_same
     except Exception as e:
         raise RuntimeError(f"Failed to elevate privileges: {e}"+f'\ncurrent_level {current_level}\nrequested_level {requested_level}')
 
+    s = time.time()
     try:
         returncode = process.check_returncode()
         failed = False
     except:
         failed = True
+
+    if failed:
+        if time.time() - s > 0.1:  # nothing actually failed because it can be observed that the program did run for some time before exiting
+            failed = False
 
     if current_level >= 1:
         failed = False
