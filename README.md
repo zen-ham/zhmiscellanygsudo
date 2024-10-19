@@ -14,7 +14,7 @@ An extremely useful and unique fully-featured wrapper of [gsudo](https://github.
 Introduction
 ===
 
-This package was made to *once and for all* solve common issue of rerunning python scripts and pyinstaller binaries as admin, and so much more! even able to execute processes as SYSTEM or even TrustedInstaller! (SYSTEM is higher then admin, and TrustedInstaller is the highest privilege level on Windows machines!)
+This package was made to *once and for all* solve the common issue of rerunning python scripts and pyinstaller binaries as admin, and so much more! even able to execute processes as SYSTEM or even TrustedInstaller! (SYSTEM is higher then admin, and TrustedInstaller is the highest privilege level on Windows machines!)
 
 Take this example; if I have a script prints some useful info, that happens to need to be run as admin whenever it's called, but I don't want to always call it from an admin shell. The only way to solve this before was to run the script in as admin in a new window, but now all my useful information that our imaginary script just printed out is all in that new window! What to do? Well, by default on Windows, it is actually *impossible* to run a process as admin and keep its console output inside the same window. But not anymore! With functions such as `zhmiscellanygsudo.admin_subprocess.Popen()` we can all have the best of both worlds!
 
