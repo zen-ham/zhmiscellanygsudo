@@ -58,10 +58,16 @@ def rerun_as_admin(run_as_SYSTEM=False, run_as_TrustedInstaller=False, keep_same
     else:
         command = f'python "{script_path}"'
 
-    elevated = False
     try:
         if keep_same_console:
-            process = run(command, run_as_SYSTEM=run_as_SYSTEM, run_as_TrustedInstaller=run_as_TrustedInstaller)
+            process = Popen(command, run_as_SYSTEM=run_as_SYSTEM, run_as_TrustedInstaller=run_as_TrustedInstaller)
+            try:
+                process.wait()
+            except:
+                try:
+                    process.terminate()
+                except:
+                    pass
         else:
             process = Popen(command, run_as_SYSTEM=run_as_SYSTEM, run_as_TrustedInstaller=run_as_TrustedInstaller)
     except Exception as e:
