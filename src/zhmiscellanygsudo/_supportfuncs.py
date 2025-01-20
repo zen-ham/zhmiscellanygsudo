@@ -82,7 +82,7 @@ def rerun_as_admin(run_as_SYSTEM=False, run_as_TrustedInstaller=False, keep_same
         raise RuntimeError(f"Failed to elevate privileges, operation was canceled by the user."+f'\ncurrent_level {current_level}\nrequested_level {requested_level}')
 
 
-def is_admin(simple=False):
+def is_admin():
     # Get the current process token
     process_token = win32security.OpenProcessToken(
         win32api.GetCurrentProcess(),
