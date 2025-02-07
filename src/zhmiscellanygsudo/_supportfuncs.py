@@ -1,4 +1,4 @@
-import os, zhmiscellany, sys, ctypes, subprocess, win32security, win32api, pickle
+import os, zhmiscellany, sys, ctypes, subprocess, win32security, win32api
 
 
 def get_gsudo_binary_path():
@@ -54,10 +54,17 @@ def rerun_as_admin(run_as_SYSTEM=False, run_as_TrustedInstaller=False):
         compiled = False
 
     if compiled:
-        command = script_path
+        command = [script_path]
     else:
-        command = f'python "{script_path}"'
-
+        command = ['python', script_path]
+    command.extend(sys.argv[1:])
+    
+    command_data = zhmiscellany.fileio.fast_dill_dumps(command)
+    
+    exec_term_handler = os.path.join(os.path.dirname(_gsudo_binary_path), 'execution_termination_handler.exe')
+    
+    command = [exec_term_handler, os.getpid(), command_data]
+    
     try:
         process = Popen(command, run_as_SYSTEM=run_as_SYSTEM, run_as_TrustedInstaller=run_as_TrustedInstaller)
         process.wait()
