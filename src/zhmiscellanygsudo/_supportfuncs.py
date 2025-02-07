@@ -1,4 +1,4 @@
-import os, zhmiscellany, sys, ctypes, subprocess, win32security, win32api, time
+import os, zhmiscellany, sys, ctypes, subprocess, win32security, win32api, pickle
 
 
 def get_gsudo_binary_path():
@@ -31,7 +31,7 @@ def get_gsudo_binary_path():
 _gsudo_binary_path = get_gsudo_binary_path()
 
 
-def rerun_as_admin(run_as_SYSTEM=False, run_as_TrustedInstaller=False, keep_same_console=True):
+def rerun_as_admin(run_as_SYSTEM=False, run_as_TrustedInstaller=False):
     requested_level = 1
     if run_as_SYSTEM:
         requested_level = 2
@@ -59,17 +59,8 @@ def rerun_as_admin(run_as_SYSTEM=False, run_as_TrustedInstaller=False, keep_same
         command = f'python "{script_path}"'
 
     try:
-        if keep_same_console:
-            process = Popen(command, run_as_SYSTEM=run_as_SYSTEM, run_as_TrustedInstaller=run_as_TrustedInstaller)
-            try:
-                process.wait()
-            except:
-                try:
-                    process.terminate()
-                except:
-                    pass
-        else:
-            process = Popen(command, run_as_SYSTEM=run_as_SYSTEM, run_as_TrustedInstaller=run_as_TrustedInstaller)
+        process = Popen(command, run_as_SYSTEM=run_as_SYSTEM, run_as_TrustedInstaller=run_as_TrustedInstaller)
+        process.wait()
     except Exception as e:
         raise RuntimeError(f"Failed to elevate privileges: {e}"+f'\ncurrent_level {current_level}\nrequested_level {requested_level}')
 
