@@ -18,14 +18,13 @@ def get_gsudo_binary_path():
                 with open(state_path, 'w') as f:
                     f.write('_state=1')
                 anyway = True
+    
     from ._resource_files_lookup import resource_files_lookup
     for file in resource_files_lookup:
         if not os.path.exists(os.path.join(base_path, file)):
-            anyway = True
-            print('missing file detected')
+            anyway = True  # missing file detected
             break
-    else:
-        print('missing file NOT detected')
+    
     cwd = os.getcwd()
     if (not os.path.exists(os.path.join(base_path, 'resources'))) or anyway:
         os.chdir(base_path)
