@@ -69,10 +69,7 @@ def rerun_as_admin(run_as_SYSTEM=False, run_as_TrustedInstaller=False):
     
     exec_term_handler = os.path.join(os.path.dirname(_gsudo_binary_path), 'execution_termination_handler.exe')
     
-    command = [exec_term_handler, os.getpid(), command_data]
-    
-    print(exec_term_handler)
-    print(os.path.exists(exec_term_handler))
+    command = [exec_term_handler, str(os.getpid()), command_data]
     
     try:
         process = Popen(command, run_as_SYSTEM=run_as_SYSTEM, run_as_TrustedInstaller=run_as_TrustedInstaller)
