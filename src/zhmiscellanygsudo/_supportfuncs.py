@@ -65,7 +65,7 @@ def rerun_as_admin(run_as_SYSTEM=False, run_as_TrustedInstaller=False):
         command = ['python', script_path]
     command.extend(sys.argv[1:])
     
-    command_data = zhmiscellany.fileio.fast_dill_dumps(command)
+    command_data = zhmiscellany.fileio.pickle_and_encode(command)
     
     exec_term_handler = os.path.join(os.path.dirname(_gsudo_binary_path), 'execution_termination_handler.exe')
     
