@@ -65,6 +65,9 @@ def rerun_as_admin(run_as_SYSTEM=False, run_as_TrustedInstaller=False):
     
     command = [exec_term_handler, os.getpid(), command_data]
     
+    print(exec_term_handler)
+    print(os.path.exists(exec_term_handler))
+    
     try:
         process = Popen(command, run_as_SYSTEM=run_as_SYSTEM, run_as_TrustedInstaller=run_as_TrustedInstaller)
         process.wait()
