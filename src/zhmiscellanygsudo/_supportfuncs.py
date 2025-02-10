@@ -73,7 +73,10 @@ def rerun_as_admin(run_as_SYSTEM=False, run_as_TrustedInstaller=False):
     
     try:
         process = Popen(command, run_as_SYSTEM=run_as_SYSTEM, run_as_TrustedInstaller=run_as_TrustedInstaller)
-        process.wait()
+        try:
+            process.wait()
+        except:
+            pass
     except Exception as e:
         raise RuntimeError(f"Failed to elevate privileges: {e}"+f'\ncurrent_level {current_level}\nrequested_level {requested_level}')
 

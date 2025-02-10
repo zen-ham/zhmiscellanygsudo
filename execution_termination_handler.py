@@ -15,8 +15,11 @@ command_data = args[1]
 command = decode_and_unpickle(command_data)
 
 proc = subprocess.Popen(command)
-while psutil.pid_exists(execution_pid) and proc.poll() is None:
-    time.sleep(0.1)
+try:
+    while psutil.pid_exists(execution_pid) and proc.poll() is None:
+        time.sleep(0.1)
+except KeyboardInterrupt:
+    pass
 try:
     proc.kill()
 except:
